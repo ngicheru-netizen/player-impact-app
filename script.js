@@ -28,6 +28,14 @@ const statLabels = {
   tackles: "Tackles",
   interceptions: "Interceptions",
 };
+
+//make a API variable to dynamically serve page depending on if it's local or on web server
+const isLocal =
+  window.location.protocol === "file:" || window.location.port === "5500"; //opened on location or opened on LiveServer
+const API_BASE = isLocal ? "http://localhost:8000" : "";
+
+//-------------//
+
 //extract player stats
 // use ?? to guard against NaN values
 function extractPlayerStats(stats) {
@@ -141,7 +149,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     try {
       const response = await fetch(
-        `http://localhost:8000/search?player=${playerValue}&league=${leagueValue}&season=${seasonValue}`,
+        `${API_BASE}/search?player=${playerValue}&league=${leagueValue}&season=${seasonValue}`,
       );
 
       if (!response.ok) {
@@ -184,7 +192,7 @@ document.addEventListener("DOMContentLoaded", function () {
       // console.log(playerValue, leagueValue, seasonValue);
       try {
         const response = await fetch(
-          `http://localhost:8000/search?player=${playerValue}&league=${leagueValue}&season=${seasonValue}`,
+          `${API_BASE}/search?player=${playerValue}&league=${leagueValue}&season=${seasonValue}`,
         );
 
         if (!response.ok) {
