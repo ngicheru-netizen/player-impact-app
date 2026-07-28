@@ -1,0 +1,98 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Football Player Impact Analyzer</title>
+    <script src="script.js"></script>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <main>
+      <section id="title-banner">
+        <h1>Football Player Impact Analyzer</h1>
+        <h2>Understanding player impact across Europe's major leagues</h2>
+      </section>
+
+      <section id="player-search">
+        <form id="player-search-form">
+          <label for="player-name">Name</label>
+          <input
+            type="text"
+            id="player-name"
+            name="player-name"
+            placeholder="Enter Last Name"
+          />
+
+          <label for="league">League</label>
+          <select name="league" id="league">
+            <option value="39">English Premier League</option>
+            <option value="61">La Liga</option>
+            <option value="78">Bundesliga</option>
+            <option value="80">Ligue 1</option>
+            <option value="135">Serie A</option>
+          </select>
+          <select name="season" id="season">
+            Season
+            <!-- here will lie JS code to give larger range of years by adding option elements | To do later-->
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+          </select>
+          <button type="submit" id="mainSearchBtn">Search</button>
+          <label for="compare">Compare</label>
+          <input
+            type="checkbox"
+            id="compareCheckbox"
+            name="compareCheckbox"
+            value="compareCheckbox"
+          />
+        </form>
+        <h2></h2>
+      </section>
+      <section id="resultsContainer">
+        <p>Find a player and see their impact!</p>
+
+        <div class="div-track">
+          <div class="div-fill"></div>
+        </div>
+      </section>
+
+      <!-- --------------------------- -->
+      <!-- --------------------------- -->
+      <!-- Comparison Section -->
+
+      <section id="comparisonSection" style="display: none">
+        <form id="comparison-player-search-form">
+          <label for="comparison-player-name">Name</label>
+          <input
+            type="text"
+            id="comparison-player-name"
+            name="comparison-player-name"
+            placeholder="Enter Comparison Player Name"
+          />
+
+          <label for="comparison-league">League</label>
+          <select name="comparison-league" id="comparison-league">
+            <option value="39">English Premier League</option>
+            <option value="61">La Liga</option>
+            <option value="78">Bundesliga</option>
+            <option value="80">Ligue 1</option>
+            <option value="135">Serie A</option>
+          </select>
+          <select name="comparison-season" id="comparison-season">
+            Season
+            <!-- here will lie JS code to give larger range of years by adding option elements | To do later-->
+            <option value="2024">2024</option>
+            <option value="2023">2023</option>
+            <option value="2022">2022</option>
+            <option value="2021">2021</option>
+          </select>
+          <button type="submit" id="compareSearchBtn">Search</button>
+        </form>
+      </section>
+      <section id="comparisonResultsContainer" style="display: none"></section>
+    </main>
+  </body>
+</html>
