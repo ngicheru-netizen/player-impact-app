@@ -116,24 +116,20 @@ function displayPlayer(player, stats, containerID) {
 }
 
 document.addEventListener("DOMContentLoaded", function () {
-  const playerName = document.getElementById("player-name");
+  const playerName = document.getElementById("playerName");
   const league = document.getElementById("league");
   const season = document.getElementById("season");
   const searchBtn = document.getElementById("mainSearchBtn");
-  const form = document.getElementById("player-search-form");
+  const form = document.getElementById("playerSearchForm");
   const resultsContainer = document.getElementById("resultsContainer");
 
-  const comparisonPlayerName = document.getElementById(
-    "comparison-player-name",
-  );
-  const comparisonLeague = document.getElementById("comparison-league");
-  const comparisonSeason = document.getElementById("comparison-season");
+  const comparisonPlayerName = document.getElementById("comparisonPlayerName");
+  const comparisonLeague = document.getElementById("comparisonLeague");
+  const comparisonSeason = document.getElementById("comparisonSeason");
   const compareCheckbox = document.getElementById("compareCheckbox");
   const comparisonSearchBtn = document.getElementById("compareSearchBtn");
   const comparisonSection = document.getElementById("comparisonSection");
-  const comparisonForm = document.getElementById(
-    "comparison-player-search-form",
-  );
+  const comparisonForm = document.getElementById("comparisonPlayerSearchForm");
   const comparisonResultsContainer = document.getElementById(
     "comparisonResultsContainer",
   );
