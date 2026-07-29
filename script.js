@@ -148,6 +148,13 @@ document.addEventListener("DOMContentLoaded", function () {
     const leagueValue = league.value;
     const seasonValue = season.value;
 
+    //make sure min 3 characters are entered in search
+    //API auto-refuses to handle search if minimum characters aren't entered
+
+    if (playerValue.trim().length < 3) {
+      statusMessage.textContent = "Please enter at least 3 letters to search.";
+    }
+
     statusMessage.textContent = "Searching..."; //"loading" status ON
     resultsContainer.innerHTML = ""; //clears any results card
 
@@ -165,6 +172,7 @@ document.addEventListener("DOMContentLoaded", function () {
       const data = await response.json();
       console.log(data);
 
+      // show results
       //extract main data
       if (!data.response || data.response.length === 0) {
         resultsContainer.innerHTML =
@@ -172,15 +180,23 @@ document.addEventListener("DOMContentLoaded", function () {
         return;
       }
 
-      //-----//
+      statusMessage.textContent = "";
 
-      const player = data.response[0].player;
-      const stats = data.response[0].statistics[0];
-      statusMessage.textContent = ""; //"loading" off - results then show
-      // show results
-      displayPlayer(player, stats, "resultsContainer");
+      const show = (i) =>
+        displayPlayer(
+          data.response[i].player,
+          data.response[i].statistics[0],
+          "resultsContainer",
+        );
+
+      if (data.response.length === 1) {
+        show(0);
+      } else {
+        displayPlayerPicker(data.response, "resultsContainer", show);
+      }
     } catch (error) {
       console.error(`Fetch failed: `, error);
+
       statusMessage.textContent =
         "Something went wrong while fetching player data. Try again. ";
     }
@@ -205,6 +221,14 @@ document.addEventListener("DOMContentLoaded", function () {
       const leagueValue = comparisonLeague.value;
       const seasonValue = comparisonSeason.value;
 
+      //make sure at least 3 letters are entered to search
+      //API auto-refuses to handle search if minimum characters aren't entered
+      if (playerValue.trim().length < 3) {
+        statusMessage.textContent =
+          "Please enter at least 3 letters to search.";
+        return;
+      }
+
       statusMessage.textContent = "Searching..."; //"loading" status ON
       resultsContainer.innerHTML = ""; // clears any results card
 
@@ -228,15 +252,24 @@ document.addEventListener("DOMContentLoaded", function () {
             "<p>No player found - you might want to check spelling and also make sure that you're choosing the right league";
           return;
         }
-        const comparisonPlayer = data.response[0].player;
-        const comparisonStats = data.response[0].statistics[0];
-        statusMessage.textContent = ""; //"loading" off - results then show
-        // show results
-        displayPlayer(
-          comparisonPlayer,
-          comparisonStats,
-          "comparisonResultsContainer",
-        );
+        statusMessage.textContent = "";
+
+        const show = (i) =>
+          displayPlayer(
+            data.response[i].player,
+            data.response[i].statistics[0],
+            "comparisonResultsContainer",
+          );
+
+        if (data.response.length === 1) {
+          show(0);
+        } else {
+          displayPlayerPicker(
+            data.response,
+            "comparisonResultsContainer",
+            show,
+          );
+        }
       } catch (error) {
         console.error(`Fetch failed: `, error);
         statusMessage.textContent =
@@ -266,3 +299,69 @@ function calculateImpactScore(position, stats) {
   }
   return { impact: Math.round(impact), breakdown };
 }
+
+//if a search returns multiple players (i.e. players with similar lastnames)
+//function that allows user to choose desired player
+
+function displayPlayerPicker(results, containerID, onPick) {
+  const container = document.getElementById(containerID);
+  container.innerHTML = `<p class="picker-label"> ${results.length} players found - pick one:</p>`;
+
+  for (let i = 0; i < results.length; i++) {
+    const player = results[i].player;
+    const stats = results[i].statistics[0];
+
+    //team Name
+    let teamName = "-";
+    if (stats && stats.team && stats.team.name) {
+      teamName = stats.team.name;
+    }
+
+    //player position
+
+    let position = "-";
+    if (stats && stats.games && stats.games.position) {
+      position = stats.games.position;
+    }
+
+    //a button for each player
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "picker-item";
+    button.innerHTML =
+      "<img src='" +
+      player.photo +
+      "' alt='' onerror='this.remove()'>" +
+      "<span>" +
+      player.firstname +
+      " " +
+      player.lastname +
+      "</span>" +
+      "<small>" +
+      teamName +
+      " : " +
+      position +
+      "</small>";
+
+    //associate button with player
+
+    const chosenIndex = i; //chosen player
+    button.addEventListener("click", function () {
+      onPick(chosenIndex);
+    });
+    container.appendChild(button);
+  }
+  container.style.display = "block";
+}
+
+//Reshape cards when compare checkbox is ticked
+
+compareCheckbox.addEventListener("change", function () {
+  const main = document.querySelector("main");
+  if (compareCheckbox.checked) {
+    main.classList.add("comparing"); //"compare mode" turned on
+  } else {
+    comparisonSection.style.display = "none";
+    main.classList.remove("comparing"); //"compare mode" stays off
+  }
+});

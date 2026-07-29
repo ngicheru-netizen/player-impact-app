@@ -18,87 +18,91 @@
         <h2>Understanding player impact across Europe's major leagues</h2>
       </section>
 
-      <section id="playerSearch">
-        <form id="playerSearchForm">
-          <label for="playerName">Name</label>
-          <input
-            type="text"
-            id="playerName"
-            name="playerName"
-            placeholder="Enter Last Name"
-          />
-
-          <label for="league">League</label>
-          <select name="league" id="league">
-            <option value="39">English Premier League ☕️</option>
-            <option value="140">Spanish La Liga ﬞ💃🏽</option>
-            <option value="78">German Bundesliga 🍺</option>
-            <option value="61">French Ligue 1 🥐</option>
-            <option value="135">Italian Serie A 🍝</option>
-          </select>
-
-          <label for="season">Season</label>
-          <select name="season" id="season">
-            <!-- here will lie JS code to give larger range of years by adding option elements | To do later-->
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-          </select>
-          <button type="submit" id="mainSearchBtn">Search</button>
-
-          <div class="checkbox-row">
-            <label for="compare">Compare</label>
+      <div class="search-grid">
+        <section id="playerSearch">
+          <form id="playerSearchForm">
+            <label for="playerName">Name</label>
             <input
-              type="checkbox"
-              id="compareCheckbox"
-              name="compareCheckbox"
-              value="compareCheckbox"
+              type="text"
+              id="playerName"
+              name="playerName"
+              placeholder="Enter Last Name"
             />
-          </div>
-        </form>
-        <p id="statusMessage" role="status" aria-live="polite"></p>
-      </section>
 
-      <section id="resultsContainer">
-        <p>Find a player and see their impact!</p>
-      </section>
+            <label for="league">League</label>
+            <select name="league" id="league">
+              <option value="39">English Premier League ☕️</option>
+              <option value="140">Spanish La Liga ﬞ💃🏽</option>
+              <option value="78">German Bundesliga 🍺</option>
+              <option value="61">French Ligue 1 🥐</option>
+              <option value="135">Italian Serie A 🍝</option>
+            </select>
 
-      <!-- --------------------------- -->
-      <!-- --------------------------- -->
-      <!-- Comparison Section -->
+            <label for="season">Season</label>
+            <select name="season" id="season">
+              <!-- here will lie JS code to give larger range of years by adding option elements | To do later-->
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+              <option value="2021">2021</option>
+            </select>
+            <button type="submit" id="mainSearchBtn">Search</button>
 
-      <section id="comparisonSection" style="display: none">
-        <form id="comparisonPlayerSearchForm">
-          <label for="comparisonPlayerName">Name</label>
-          <input
-            type="text"
-            id="comparisonPlayerName"
-            name="comparisonPlayerName"
-            placeholder="Enter Comparison Player Name"
-          />
+            <div class="checkbox-row">
+              <label for="compare">Compare</label>
+              <input
+                type="checkbox"
+                id="compareCheckbox"
+                name="compareCheckbox"
+                value="compareCheckbox"
+              />
+            </div>
+          </form>
+          <p id="statusMessage" role="status" aria-live="polite"></p>
+        </section>
 
-          <label for="comparisonLeague">League</label>
-          <select name="comparisonLeague" id="comparisonLeague">
-            <option value="39">English Premier League</option>
-            <option value="140">La Liga</option>
-            <option value="78">Bundesliga</option>
-            <option value="61">Ligue 1</option>
-            <option value="135">Serie A</option>
-          </select>
+        <!-- Comparison Section -->
 
-          <label for="comparisonSeason">Season</label>
-          <select name="comparisonSeason" id="comparisonSeason">
-            <!-- here will lie JS code to give larger range of years by adding option elements | To do later-->
-            <option value="2024">2024</option>
-            <option value="2023">2023</option>
-            <option value="2022">2022</option>
-            <option value="2021">2021</option>
-          </select>
-          <button type="submit" id="compareSearchBtn">Search</button>
-        </form>
-      </section>
-      <section id="comparisonResultsContainer" style="display: none"></section>
+        <section id="comparisonSection" style="display: none">
+          <form id="comparisonPlayerSearchForm">
+            <label for="comparisonPlayerName">Name</label>
+            <input
+              type="text"
+              id="comparisonPlayerName"
+              name="comparisonPlayerName"
+              placeholder="Enter Comparison Player Name"
+            />
+
+            <label for="comparisonLeague">League</label>
+            <select name="comparisonLeague" id="comparisonLeague">
+              <option value="39">English Premier League</option>
+              <option value="140">La Liga</option>
+              <option value="78">Bundesliga</option>
+              <option value="61">Ligue 1</option>
+              <option value="135">Serie A</option>
+            </select>
+
+            <label for="comparisonSeason">Season</label>
+            <select name="comparisonSeason" id="comparisonSeason">
+              <!-- here will lie JS code to give larger range of years by adding option elements | To do later-->
+              <option value="2024">2024</option>
+              <option value="2023">2023</option>
+              <option value="2022">2022</option>
+              <option value="2021">2021</option>
+            </select>
+            <button type="submit" id="compareSearchBtn">Search</button>
+          </form>
+        </section>
+      </div>
+      <div class="results-grid">
+        <section id="resultsContainer">
+          <p>Find a player and see their impact!</p>
+        </section>
+        <section
+          id="comparisonResultsContainer"
+          style="display: none"
+        ></section>
+      </div>
     </main>
     <footer>
       <p>&copy; Nadiv Gicheru, 2026</p>
