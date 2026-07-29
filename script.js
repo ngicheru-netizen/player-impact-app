@@ -90,7 +90,7 @@ function displayPlayer(player, stats, containerID) {
     for (const stat in result.breakdown) {
       const score = result.breakdown[stat];
       const label = statLabels[stat] ?? stat; //show labels correctly on page and protects if label is missing
-      parts += `<p>${statLabels[stat]}: ${score}</p>`;
+      parts += `<p>${statLabels[stat]}: ${score}%</p>`;
     }
 
     //show impact progress bar
@@ -110,7 +110,7 @@ function displayPlayer(player, stats, containerID) {
         <div class="div-track">
             <div class="div-fill" style="width: ${result.impact}%; background-color: ${color};"></div>
         </div>
-        <p>${parts}</p>`;
+        ${parts}`;
   }
   container.style.display = "block";
 }
@@ -155,6 +155,11 @@ document.addEventListener("DOMContentLoaded", function () {
       console.log(data);
 
       //extract main data
+      if (!data.response || data.response.length === 0) {
+        resultsContainer.innerHTML =
+          "<p>No player found - you might want to check spelling and also make sure that you're choosing the right league";
+        return;
+      }
       const player = data.response[0].player;
       const stats = data.response[0].statistics[0];
       // show results
