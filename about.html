@@ -1,0 +1,88 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>About</title>
+    <link rel="stylesheet" href="style.css" />
+  </head>
+  <body>
+    <nav class="navigation">
+      <a href="index.html">Analyzer</a>
+      <a href="about.html">About</a>
+    </nav>
+    <main>
+      <section id="title-banner">
+        <h1>About</h1>
+        <h2>Understanding player impact across Europe's major leagues</h2>
+      </section>
+
+      <section id="aboutContent">
+        <p>
+          The Football Player Impact Analyzer is a web application designed to
+          provide insights into the performance and impact of football players
+          across Europe's major leagues. By analyzing various metrics, users can
+          gain a deeper understanding of how players contribute to their teams'
+          success.
+        </p>
+
+        <p>
+          This tool allows users to search for players by name, select the
+          league they play in, and choose the season they want to analyze. The
+          application then retrieves relevant data and presents it in an
+          easy-to-understand format.
+        </p>
+
+        <p>
+          Whether you're a football enthusiast, a coach, or a sports analyst,
+          the Football Player Impact Analyzer offers valuable insights to help
+          you make informed decisions and enhance your understanding of the
+          game.
+        </p>
+      </section>
+      <section id="explainImpactScore">
+        <h3>What is the Impact Score?</h3>
+
+        <p>
+          The impact score rates a player out of 100, and is calculated
+          differently depending on their position i.e. An attacker is judged on
+          goals, assists and dribbles, a midfielder on passing, defender on
+          tackles and interceptions (because it wouldn't be fair to grade a CB
+          on how many goals they score - it's not their primary "task").
+        </p>
+
+        <p>
+          For each position's key stats the player's total is compared against a
+          "great season" ceiling e.g. 20 goals for an attacker, and converted to
+          a percentage, capped at 100% so that any extraordinary performance
+          doesn't distort the result. Each stat is then given a weight
+          reflecting how much it matters for that position (with each weight
+          adding up to 1.0). The weighted percentages are added together to
+          produce the final score.
+        </p>
+
+        <p>
+          In simpler words: The closer a player is to elite benchmarks, the
+          higher their impact score.
+        </p>
+
+        <p>
+          If you'd like to learn more about how this was built, check out the
+          GitHub repository
+          <a href="https://github.com/ngicheru-netizen/player-impact-app"
+            >here</a
+          >
+        </p>
+
+        <p>Enjoy!</p>
+      </section>
+    </main>
+    <footer>
+      <p>&copy; Nadiv Gicheru, 2026</p>
+      <p>
+        Powered by
+        <a href="https://www.api-football.com/documentation-v3">API-Football</a>
+      </p>
+    </footer>
+  </body>
+</html>
