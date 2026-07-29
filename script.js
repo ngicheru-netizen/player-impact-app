@@ -163,6 +163,14 @@ document.addEventListener("DOMContentLoaded", function () {
     "comparisonResultsContainer",
   );
   const limitCounter = document.getElementById("limitCounter");
+
+  //API limit counter helper
+  function updateLimitCounter(data) {
+    if (!data.rateLimit) return;
+    const rl = data.rateLimit;
+    limitCounter.textContent = `API: ${rl.dailyRemaining}/${rl.dailyLimit} today | ${rl.minuteRemaining}/${rl.minuteLimit} this minute`;
+  }
+
   // Find player and show stats
   searchBtn.addEventListener("click", async function handleSearch(e) {
     e.preventDefault();
@@ -193,9 +201,7 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error(`HTTP error! Status ${response.status}`);
       }
       const data = await response.json();
-      if (data.rateLimit) {
-        limitCounter.textContent = `API: ${data.rateLimit.remaining}/${data.rateLimit.limit} left`;
-      }
+      updateLimitCounter(data);
       if (data.errors && Object.keys(data.errors).length > 0) {
         resultsContainer.innerHTML =
           "<p>API limit reached - try again later. </p>";
@@ -282,9 +288,7 @@ document.addEventListener("DOMContentLoaded", function () {
           throw new Error(`HTTP error! Status ${response.status}`);
         }
         const data = await response.json();
-        if (data.rateLimit) {
-          limitCounter.textContent = `API: ${data.rateLimit.remaining}/${data.rateLimit.limit} left`;
-        }
+        updateLimitCounter(data);
         if (data.errors && Object.keys(data.errors).length > 0) {
           resultsContainer.innerHTML =
             "<p>API limit reached - try again later. </p>";
