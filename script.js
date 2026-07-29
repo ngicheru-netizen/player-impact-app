@@ -110,6 +110,7 @@ function displayPlayer(player, stats, containerID) {
         <div class="div-track">
             <div class="div-fill" style="width: ${result.impact}%; background-color: ${color};"></div>
         </div>
+        <p class="breakdown-label">How each stat makes up the score:</p>
         ${parts}`;
   }
   container.style.display = "block";
@@ -122,6 +123,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const searchBtn = document.getElementById("mainSearchBtn");
   const form = document.getElementById("playerSearchForm");
   const resultsContainer = document.getElementById("resultsContainer");
+  const statusMessage = document.getElementById("statusMessage");
 
   const comparisonPlayerName = document.getElementById("comparisonPlayerName");
   const comparisonLeague = document.getElementById("comparisonLeague");
@@ -135,10 +137,13 @@ document.addEventListener("DOMContentLoaded", function () {
   );
   // Find player and show stats
   searchBtn.addEventListener("click", async function handleSearch(e) {
+    e.preventDefault();
     const playerValue = playerName.value;
     const leagueValue = league.value;
     const seasonValue = season.value;
-    e.preventDefault();
+
+    statusMessage.textContent = "Searching..."; //"loading" status ON
+    resultsContainer.innerHTML = ""; //clears any results card
 
     // Call the function to fetch and display player stats
     // console.log(playerValue, leagueValue, seasonValue);
@@ -160,13 +165,18 @@ document.addEventListener("DOMContentLoaded", function () {
           "<p>No player found - you might want to check spelling and also make sure that you're choosing the right league";
         return;
       }
+
+      //-----//
+
       const player = data.response[0].player;
       const stats = data.response[0].statistics[0];
+      statusMessage.textContent = ""; //"loading" off - results then show
       // show results
       displayPlayer(player, stats, "resultsContainer");
     } catch (error) {
       console.error(`Fetch failed: `, error);
-      resultsContainer.innerHTML = "<p>Error getting player data</p>";
+      statusMessage.textContent =
+        "Something went wrong while fetching player data. Try again. ";
     }
   });
   //---------------------------------//
@@ -184,13 +194,17 @@ document.addEventListener("DOMContentLoaded", function () {
   comparisonSearchBtn.addEventListener(
     "click",
     async function handleCompareSearch(e) {
+      e.preventDefault();
       const playerValue = comparisonPlayerName.value;
       const leagueValue = comparisonLeague.value;
       const seasonValue = comparisonSeason.value;
-      e.preventDefault();
+
+      statusMessage.textContent = "Searching..."; //"loading" status ON
+      resultsContainer.innerHTML = ""; // clears any results card
 
       // Call the function to fetch and display player 2 stats
       // console.log(playerValue, leagueValue, seasonValue);
+
       try {
         const response = await fetch(
           `${API_BASE}/search?player=${playerValue}&league=${leagueValue}&season=${seasonValue}`,
@@ -203,8 +217,14 @@ document.addEventListener("DOMContentLoaded", function () {
         console.log(data);
 
         //extract main data
+        if (!data.response || data.response.length === 0) {
+          comparisonResultsContainer.innerHTML =
+            "<p>No player found - you might want to check spelling and also make sure that you're choosing the right league";
+          return;
+        }
         const comparisonPlayer = data.response[0].player;
         const comparisonStats = data.response[0].statistics[0];
+        statusMessage.textContent = ""; //"loading" off - results then show
         // show results
         displayPlayer(
           comparisonPlayer,
@@ -213,9 +233,8 @@ document.addEventListener("DOMContentLoaded", function () {
         );
       } catch (error) {
         console.error(`Fetch failed: `, error);
-
-        comparisonResultsContainer.innerHTML =
-          "<p>Error getting player data - try searching by last name</p>";
+        statusMessage.textContent =
+          "Something went wrong while fetching player data. Try again. ";
       }
     },
   );
