@@ -74,9 +74,15 @@ function displayPlayer(player, stats, containerID) {
   const interceptions = stats.tackles.interceptions;
 
   container.innerHTML = `
-      <h2>${player.firstname} ${player.lastname}</h2>
-      <p>Position: ${stats.games.position}</p>
-      <p>Team: ${stats.team.name}</p>
+    <div class="player-header">
+        <img class="player-photo" src="${player.photo}" alt="${player.firstname} ${player.lastname}" onerror="this.remove()">
+    
+        <div>
+            <h2>${player.firstname} ${player.lastname}</h2>
+            <p>Position: ${stats.games.position}</p>
+            <p>Team: ${stats.team.name}</p>
+        </div>
+    </div>
       <p>Goals: ${goals}</p>
       <p>Tackles: ${totalTackles}</p>
       <p>Passes: ${passes}</p>

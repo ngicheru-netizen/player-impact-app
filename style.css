@@ -171,3 +171,26 @@ footer {
   font-size: 0.85rem;
   margin-top: 0.25rem;
 }
+
+.player-header {
+  display: flex;
+  align-items: center;
+  gap: var(--space);
+  margin-bottom: var(--space);
+}
+
+.player-photo {
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
+  object-fit: cover;
+  flex-shrink: 0;
+}
+
+.player-header h2 {
+  margin-bottom: 0.25rem;
+}
+
+.player-header p {
+  margin-bottom: 0.15rem;
+}
