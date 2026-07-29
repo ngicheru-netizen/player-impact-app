@@ -1,9 +1,12 @@
 //Stat ceilings for each position
 
+const negativeStats = ["goals_conceded"]; //where a "lower" number is better
+
 const maxValues = {
   Attacker: { goals: 20, assists: 10, dribbles_succ: 90 },
   Midfielder: { goals: 10, assists: 9, key_passes: 80, passes_total: 2400 },
   Defender: { tackles: 110, interceptions: 60, passes_total: 2600 },
+  Goalkeeper: { saves: 90, goals_conceded: 75, passes_total: 900 },
 };
 
 //stat weights to show how much each stat matters depending on position
@@ -17,6 +20,7 @@ const statWeight = {
     passes_total: 0.2,
   },
   Defender: { tackles: 0.4, interceptions: 0.4, passes_total: 0.2 },
+  Goalkeeper: { saves: 0.5, goals_conceded: 0.35, passes_total: 0.15 },
 };
 
 const statLabels = {
@@ -27,6 +31,8 @@ const statLabels = {
   passes_total: "Total Passes",
   tackles: "Tackles",
   interceptions: "Interceptions",
+  saves: "Saves",
+  goals_conceded: "Goals Conceded",
 };
 
 //make a API variable to dynamically serve page depending on if it's local or on web server
@@ -46,6 +52,8 @@ function extractPlayerStats(stats) {
   const passes_total = stats.passes.total ?? 0;
   const tackles = stats.tackles.total ?? 0;
   const interceptions = stats.tackles.interceptions ?? 0;
+  const saves = stats.goals.saves ?? 0;
+  const goals_conceded = stats.goals.conceded ?? 0;
 
   return {
     goals,
@@ -55,6 +63,8 @@ function extractPlayerStats(stats) {
     passes_total,
     tackles,
     interceptions,
+    saves,
+    goals_conceded,
   };
 }
 
@@ -73,6 +83,21 @@ function displayPlayer(player, stats, containerID) {
   const successfulDribbles = stats.dribbles.success;
   const interceptions = stats.tackles.interceptions;
 
+  //handle for goalkeepers
+  let statLines;
+  if (position === "Goalkeeper") {
+    statLines = `
+        <p>Saves: ${stats.goals.saves ?? 0}</p>
+        <p>Goals Conceded: ${stats.goals.conceded ?? 0}</p>
+        <p>Passes: ${passes}</p>`;
+  } else {
+    statLines = `<p>Goals: ${goals}</p>
+      <p>Tackles: ${totalTackles}</p>
+      <p>Passes: ${passes}</p>
+      <p>Dribbles: ${successfulDribbles}/${attemptedDribbles}</p>
+      <p>Interceptions: ${interceptions}</p>`;
+  }
+
   container.innerHTML = `
     <div class="player-header">
         <img class="player-photo" src="${player.photo}" alt="${player.firstname} ${player.lastname}" onerror="this.remove()">
@@ -83,11 +108,7 @@ function displayPlayer(player, stats, containerID) {
             <p>Team: ${stats.team.name}</p>
         </div>
     </div>
-      <p>Goals: ${goals}</p>
-      <p>Tackles: ${totalTackles}</p>
-      <p>Passes: ${passes}</p>
-      <p>Dribbles: ${successfulDribbles}/${attemptedDribbles}</p>
-      <p>Interceptions: ${interceptions}</p>`;
+      ${statLines}`;
 
   //impact results
   const result = calculateImpactScore(position, stats);
@@ -141,6 +162,7 @@ document.addEventListener("DOMContentLoaded", function () {
   const comparisonResultsContainer = document.getElementById(
     "comparisonResultsContainer",
   );
+  const limitCounter = document.getElementById("limitCounter");
   // Find player and show stats
   searchBtn.addEventListener("click", async function handleSearch(e) {
     e.preventDefault();
@@ -153,6 +175,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
     if (playerValue.trim().length < 3) {
       statusMessage.textContent = "Please enter at least 3 letters to search.";
+      return;
     }
 
     statusMessage.textContent = "Searching..."; //"loading" status ON
@@ -170,6 +193,14 @@ document.addEventListener("DOMContentLoaded", function () {
         throw new Error(`HTTP error! Status ${response.status}`);
       }
       const data = await response.json();
+      if (data.rateLimit) {
+        limitCounter.textContent = `API: ${data.rateLimit.remaining}/${data.rateLimit.limit} left`;
+      }
+      if (data.errors && Object.keys(data.errors).length > 0) {
+        resultsContainer.innerHTML =
+          "<p>API limit reached - try again later. </p>";
+        return;
+      }
       console.log(data);
 
       // show results
@@ -204,12 +235,19 @@ document.addEventListener("DOMContentLoaded", function () {
   //---------------------------------//
 
   // show comparison form once "compare" checkbox is checked
+  //Reshape cards when compare checkbox is ticked
   compareCheckbox.addEventListener("change", function () {
+    const main = document.querySelector("main");
     if (compareCheckbox.checked) {
       comparisonSection.style.display = "block";
-      //show comparison results
+      comparisonResultsContainer.style.display = "block";
+      comparisonResultsContainer.innerHTML =
+        "<p>Search a player to compare.</p>";
+      main.classList.add("comparing");
     } else {
       comparisonSection.style.display = "none";
+      comparisonResultsContainer.style.display = "none";
+      main.classList.remove("comparing"); //"compare mode" stays off
     }
   });
 
@@ -230,7 +268,7 @@ document.addEventListener("DOMContentLoaded", function () {
       }
 
       statusMessage.textContent = "Searching..."; //"loading" status ON
-      resultsContainer.innerHTML = ""; // clears any results card
+      comparisonResultsContainer.innerHTML = ""; // clears any results card
 
       // Call the function to fetch and display player 2 stats
       // console.log(playerValue, leagueValue, seasonValue);
@@ -244,6 +282,15 @@ document.addEventListener("DOMContentLoaded", function () {
           throw new Error(`HTTP error! Status ${response.status}`);
         }
         const data = await response.json();
+        if (data.rateLimit) {
+          limitCounter.textContent = `API: ${data.rateLimit.remaining}/${data.rateLimit.limit} left`;
+        }
+        if (data.errors && Object.keys(data.errors).length > 0) {
+          resultsContainer.innerHTML =
+            "<p>API limit reached - try again later. </p>";
+          return;
+        }
+
         console.log(data);
 
         //extract main data
@@ -293,7 +340,10 @@ function calculateImpactScore(position, stats) {
 
   for (const stat in ceilings) {
     //ratio of stat to ceiling but capped at 1 so as not to to have crazy numbers.
-    const score = Math.min(values[stat] / ceilings[stat], 1) * 100; //make it %
+    const ratio = Math.min(values[stat] / ceilings[stat], 1);
+    const adjusted = negativeStats.includes(stat) ? 1 - ratio : ratio; //goals_conceded - ratio (few conceded=better score)
+    const score = adjusted * 100; //make it %
+
     breakdown[stat] = Math.round(score); //what actually shows
     impact = impact + score * weights[stat];
   }
@@ -353,15 +403,3 @@ function displayPlayerPicker(results, containerID, onPick) {
   }
   container.style.display = "block";
 }
-
-//Reshape cards when compare checkbox is ticked
-
-compareCheckbox.addEventListener("change", function () {
-  const main = document.querySelector("main");
-  if (compareCheckbox.checked) {
-    main.classList.add("comparing"); //"compare mode" turned on
-  } else {
-    comparisonSection.style.display = "none";
-    main.classList.remove("comparing"); //"compare mode" stays off
-  }
-});

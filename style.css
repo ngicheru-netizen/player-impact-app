@@ -50,12 +50,20 @@ body {
   color: var(--text);
   line-height: 1.5;
   background-color: var(--bg);
+}
+
+/* Background photo */
+body::before {
+  content: "";
+  position: fixed;
+  inset: -20px;
+  z-index: -1; /* sit behind everything */
   background-image:
-    linear-gradient(rgba(0, 0, 0, 0.55), rgba(0, 0, 0, 0.55)),
+    linear-gradient(rgba(26, 0, 0, 0.6), rgba(24, 6, 6, 0.6)),
     url("assets/football-stadium.jpg");
   background-size: cover;
   background-position: center;
-  background-attachment: fixed;
+  filter: blur(2px);
 }
 
 main {
@@ -146,7 +154,7 @@ button {
 }
 
 button:hover {
-  opacity: 0.9;
+  opacity: 0.9rem;
 }
 
 .checkbox-row {
@@ -244,6 +252,31 @@ footer a {
   margin-bottom: 0.15rem;
 }
 
+/* side-by-side results when comparing players */
+
+.results-grid {
+  display: flex;
+  gap: var(--space);
+  flex-wrap: wrap;
+}
+.results-grid > section {
+  flex: 1 1 260px;
+}
+
+.search-grid {
+  display: flex;
+  gap: var(--space);
+  flex-wrap: wrap;
+  align-items: flex-start;
+}
+.search-grid > section {
+  flex: 1 1 260px;
+}
+
+main.comparing {
+  max-width: 1100px;
+}
+
 /* edge cases */
 
 .picker-label {
@@ -266,7 +299,7 @@ footer a {
   margin-bottom: 0.5rem;
 }
 
-.pick-item:hover {
+.picker-item:hover {
   border-color: var(--accent);
   background: var(--bg);
 }
@@ -282,4 +315,17 @@ footer a {
 .picker-item small {
   color: var(--muted);
   margin-left: auto;
+}
+
+/* API limit counter */
+#limitCounter {
+  position: fixed;
+  top: var(--space);
+  right: var(--space);
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius);
+  padding: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  z-index: 10;
 }

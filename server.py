@@ -45,7 +45,12 @@ class handler(BaseHTTPRequestHandler):
 
         if response_object.status_code == 200:
             response = response_object.json()
-
+            response["rateLimit"] = {
+                "limit": response_object.headers.get("x-ratelimit-requests-limit"),
+                "remaining": response_object.headers.get(
+                    "x-ratelimit-requests-remaining"
+                ),
+            }
             self.send_response(200)
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Content-type", "application/json")
