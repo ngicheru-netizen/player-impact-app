@@ -41,7 +41,6 @@ class handler(BaseHTTPRequestHandler):
         URL = f"https://v3.football.api-sports.io/players?league={league}&season={season}&search={player}"
         headers = {"x-apisports-key": api_key, "Accept": "application/json"}
         response_object = requests.get(URL, headers=headers)
-        print(f"API Key: {api_key}")
 
         if response_object.status_code == 200:
             response = response_object.json()
