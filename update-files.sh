@@ -7,7 +7,7 @@ DEST=/var/www/player-impact-app
 
 for host in 184.73.19.238 35.175.218.108; do
   echo "=== $host ==="
-  for f in index.html script.js style.css server.py; do
+  for f in index.html script.js style.css server.py about.html; do
     scp -i "$KEY" "$f" ubuntu@"$host":"$DEST/$f"
   done
     scp -r -i "$KEY" assets ubuntu@"$host":"$DEST/"     # ← the folder
