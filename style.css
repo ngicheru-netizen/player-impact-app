@@ -209,6 +209,7 @@ footer a {
   border: 1px solid var(--border);
   border-radius: var(--radius);
   padding: var(--space);
+  animation: fadeInUp 0.35s ease;
 }
 
 #resultsContainer h2,
@@ -328,4 +329,30 @@ main.comparing {
   padding: 0.3rem 0.6rem;
   font-size: 0.8rem;
   z-index: 10;
+}
+
+/* UX stuff */
+button {
+  transition: opacity 0.15s ease;
+}
+
+.picker-item {
+  transition:
+    border-color 0.15s ease,
+    background 0.15s ease;
+}
+
+main {
+  transition: max-width 0.3 ease;
+}
+
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
 }
