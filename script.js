@@ -169,7 +169,7 @@ document.addEventListener("DOMContentLoaded", function () {
   function updateLimitCounter(data) {
     if (!data.rateLimit) return;
     const rl = data.rateLimit;
-    limitCounter.textContent = `API: ${rl.dailyRemaining}/${rl.dailyLimit} today | ${rl.minuteRemaining}/${rl.minuteLimit} this minute`;
+    limitCounter.textContent = `API: ${rl.dailyRemaining}/${rl.dailyLimit} left today | ${rl.minuteRemaining}/${rl.minuteLimit} left this minute`;
   }
 
   // Find player and show stats
@@ -368,6 +368,7 @@ function displayPlayerPicker(results, containerID, onPick) {
 
     //team Name
     let teamName = "-";
+    x;
     if (stats && stats.team && stats.team.name) {
       teamName = stats.team.name;
     }
