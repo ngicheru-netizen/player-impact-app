@@ -368,7 +368,6 @@ function displayPlayerPicker(results, containerID, onPick) {
 
     //team Name
     let teamName = "-";
-    x;
     if (stats && stats.team && stats.team.name) {
       teamName = stats.team.name;
     }
