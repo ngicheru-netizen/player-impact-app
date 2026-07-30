@@ -9,6 +9,19 @@ import requests
 
 load_dotenv()
 api_key = os.getenv("FOOTBALL_KEY")
+last_known_rate_limit = {
+    "dailyLimit": None,
+    "dailyRemaining": None,
+    "minuteLimit": None,
+    "minuteRemaining": None,
+}
+
+
+def get_rate_limit_value(key, header_value):
+    if header_value is not None:
+        last_known_rate_limit[key] = header_value
+        return header_value
+    return last_known_rate_limit[key]
 
 
 class handler(BaseHTTPRequestHandler):
@@ -23,7 +36,7 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps({"error": "Parameter not found"}).encode())
+            self.wfile.write(json.dumps({"errors": "Parameter not found"}).encode())
             return
 
         player = params["player"][0]
@@ -35,23 +48,33 @@ class handler(BaseHTTPRequestHandler):
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps({"error": "Endpoint not found"}).encode())
+            self.wfile.write(json.dumps({"errors": "Endpoint not found"}).encode())
             return
 
         URL = f"https://v3.football.api-sports.io/players?league={league}&season={season}&search={player}"
         headers = {"x-apisports-key": api_key, "Accept": "application/json"}
         response_object = requests.get(URL, headers=headers)
 
+        rate_limit_info = {
+            "dailyLimit": get_rate_limit_value(
+                "dailyLimit", response_object.headers.get("x-ratelimit-requests-limit")
+            ),
+            "dailyRemaining": get_rate_limit_value(
+                "dailyRemaining",
+                response_object.headers.get("x-ratelimit-requests-remaining"),
+            ),
+            "minuteLimit": get_rate_limit_value(
+                "minuteLimit", response_object.headers.get("x-ratelimit-limit")
+            ),
+            "minuteRemaining": get_rate_limit_value(
+                "minuteRemaining", response_object.headers.get("x-ratelimit-remaining")
+            ),
+        }
         if response_object.status_code == 200:
+
             response = response_object.json()
-            response["rateLimit"] = {
-                "dailyLimit": response_object.headers.get("x-ratelimit-requests-limit"),
-                "dailyRemaining": response_object.headers.get(
-                    "x-ratelimit-requests-remaining"
-                ),
-                "minuteLimit": response_object.headers.get("x-ratelimit-limit"),
-                "minuteRemaining": response_object.headers.get("x-ratelimit-remaining"),
-            }
+            response["rateLimit"] = rate_limit_info
+
             self.send_response(200)
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Content-type", "application/json")
@@ -59,11 +82,15 @@ class handler(BaseHTTPRequestHandler):
             print(f"Data: {response}")
             self.wfile.write(json.dumps(response).encode())
         else:
-            self.send_response(response_object.status_code)
+            self.send_response(200)
             self.send_header("Access-Control-Allow-Origin", "*")
             self.send_header("Content-type", "application/json")
             self.end_headers()
-            self.wfile.write(json.dumps({"error": "Something went wrong"}).encode())
+            error_response = {
+                "errors": "Something went wrong",
+                "rateLimit": rate_limit_info,
+            }
+            self.wfile.write(json.dumps(error_response).encode())
 
         print(response_object.text)
 
