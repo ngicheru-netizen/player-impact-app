@@ -17,6 +17,7 @@ last_known_rate_limit = {
 }
 
 
+# helper function for keep last know API Limit value
 def get_rate_limit_value(key, header_value):
     if header_value is not None:
         last_known_rate_limit[key] = header_value
@@ -55,6 +56,7 @@ class handler(BaseHTTPRequestHandler):
         headers = {"x-apisports-key": api_key, "Accept": "application/json"}
         response_object = requests.get(URL, headers=headers)
 
+        # keeps last known API limit value
         rate_limit_info = {
             "dailyLimit": get_rate_limit_value(
                 "dailyLimit", response_object.headers.get("x-ratelimit-requests-limit")
