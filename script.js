@@ -1,3 +1,4 @@
+"use strict";
 //Stat ceilings for each position
 
 const negativeStats = ["goals_conceded"]; //where a "lower" number is better
