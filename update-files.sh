@@ -13,5 +13,4 @@ for host in 184.73.19.238 35.175.218.108; do
     scp -r -i "$KEY" assets ubuntu@"$host":"$DEST/"     # ← the folder
   ssh -i "$KEY" ubuntu@"$host" "sudo systemctl restart player-impact"
 done
-  ssh -i /Users/nadivgicheru/.ssh/intranet-webserver ubuntu@$host "sudo systemctl restart player-impact"
-done
+
