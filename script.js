@@ -167,7 +167,7 @@ document.addEventListener("DOMContentLoaded", function () {
 
   //API limit counter helper
   function updateLimitCounter(data) {
-    if (!data.rateLimit) return;
+    if (!data.rateLimit || data.rateLimit.dailyLimit === null) return;
     const rl = data.rateLimit;
     limitCounter.textContent = `API: ${rl.dailyRemaining}/${rl.dailyLimit} left today | ${rl.minuteRemaining}/${rl.minuteLimit} left this minute`;
   }
@@ -198,17 +198,14 @@ document.addEventListener("DOMContentLoaded", function () {
         `${API_BASE}/search?player=${playerValue}&league=${leagueValue}&season=${seasonValue}`,
       );
 
-      if (!response.ok) {
-        throw new Error(`HTTP error! Status ${response.status}`);
-      }
       const data = await response.json();
       updateLimitCounter(data);
-      if (data.errors && Object.keys(data.errors).length > 0) {
-        resultsContainer.innerHTML =
-          "<p>API limit reached - try again later. </p>";
+
+      if (data.error) {
+        statusMessage.textContent = "";
+        resultsContainer.innerHTML = `<p>${data.message}</p>`;
         return;
       }
-      console.log(data);
 
       // show results
       //extract main data
@@ -236,7 +233,7 @@ document.addEventListener("DOMContentLoaded", function () {
       console.error(`Fetch failed: `, error);
 
       statusMessage.textContent =
-        "Something went wrong while fetching player data. Try again. ";
+        "Couldn't reach the server. Check connection and try again ";
     }
   });
   //---------------------------------//
@@ -285,14 +282,10 @@ document.addEventListener("DOMContentLoaded", function () {
           `${API_BASE}/search?player=${playerValue}&league=${leagueValue}&season=${seasonValue}`,
         );
 
-        if (!response.ok) {
-          throw new Error(`HTTP error! Status ${response.status}`);
-        }
         const data = await response.json();
         updateLimitCounter(data);
-        if (data.errors && Object.keys(data.errors).length > 0) {
-          resultsContainer.innerHTML =
-            "<p>API limit reached - try again later. </p>";
+        if (data.error) {
+          comparisonResultsContainer.innerHTML = `<p>${data.message}</p>`;
           return;
         }
 
@@ -325,7 +318,7 @@ document.addEventListener("DOMContentLoaded", function () {
       } catch (error) {
         console.error(`Fetch failed: `, error);
         statusMessage.textContent =
-          "Something went wrong while fetching player data. Try again. ";
+          "Couldn't reach server. Check connection and try again. ";
       }
     },
   );
