@@ -3,6 +3,8 @@
 A vanilla-JavaScript web app that searches football players across Europe's top five leagues, displays their season stats, and computes a weighted **Impact Score (0–100)** tailored to each player's position. Built with no frameworks, backed by a small Python API proxy, and deployed behind a load balancer.
 
 > ALU BSE Web Infrastructure summative.
+> Nadiv Razzaq Gicheru
+> Live Demo on Youtube : https://www.youtube.com/watch?v=2eqTHggqoIQ
 
 ---
 
